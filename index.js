@@ -4,38 +4,40 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // Permite que FlutterFlow se conecte sin problemas de CORS
+app.use(cors());
 
-
-const uri = "mongodb+srv://moralesolguinivanmauriciom352_db_user:Jr2tJL3phVZp8k@podcast.zpapegt.mongodb.net/?appName=podcast";
+const uri = "mongodb+srv://...";
 const client = new MongoClient(uri);
 
-// Endpoint para LEER los podcasts de la base de datos
-app.get('/podcasts', async (req, res) => {
-    try {
-        await client.connect();
-        const database = client.db('podcast'); 
-        const coleccion = database.collection('episodios'); // Asegúrate que tu colección se llame así en Mongo
-        const resultados = await coleccion.find({}).toArray();
-        res.status(200).json(resultados);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// Conectar UNA sola vez al iniciar el servidor
+async function main() {
+    await client.connect();
+    console.log("Conectado a MongoDB");
 
-// Endpoint para GUARDAR un nuevo podcast
-app.post('/podcasts', async (req, res) => {
-    try {
-        await client.connect();
-        const database = client.db('podcast');
-        const coleccion = database.collection('episodios');
-        const nuevoPodcast = req.body; 
-        const resultado = await coleccion.insertOne(nuevoPodcast);
-        res.status(201).json({ mensaje: "Guardado con éxito", id: resultado.insertedId });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+    const db = client.db('podcast');
+    const episodios = db.collection('episodios');
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor activo en puerto ${PORT}`));
+    app.get('/podcasts', async (req, res) => {
+        try {
+            const resultados = await episodios.find({}).toArray();
+            res.status(200).json(resultados);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post('/podcasts', async (req, res) => {
+        try {
+            const nuevo = req.body;
+            const resultado = await episodios.insertOne(nuevo);
+            res.status(201).json({ mensaje: "Guardado con éxito", id: resultado.insertedId });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Servidor activo en puerto ${PORT}`));
+}
+
+main().catch(console.error);
