@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'web')));
 
 // Conexión a MongoDB (Asegúrate de cambiar los datos con tus credenciales)
-const MONGO_URI = process.env.MONGO_URI || mongodb+srv://moralesolguinivanmauriciom352_db_user:2h4rkyXDD@podcast.zpapegt.mongodb.net/?appName=podcast;
+const MONGO_URI = process.env.MONGO_URI || mongodb+srv://moralesolguinivanmauriciom352_db_user:Jr2tJL3phVZp8k@podcast.zpapegt.mongodb.net/?appName=podcast;
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Conectado exitosamente a MongoDB Atlas'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
