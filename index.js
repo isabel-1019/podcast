@@ -13,8 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 // Le dice a Node.js que la carpeta 'web' contiene los archivos visuales de FlutterFlow
 app.use(express.static(path.join(__dirname, 'web')));
 
-// Conexión a MongoDB (Asegúrate de cambiar los datos con tus credenciales)
-const MONGO_URI = process.env.MONGO_URI || mongodb+srv://moralesolguinivanmauriciom352_db_user:Jr2tJL3phVZp8k@podcast.zpapegt.mongodb.net/?appName=podcast
+// Conexión a MongoDB (Corregido con comillas para evitar el SyntaxError)
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://moralesolguinivanmauriciom352_db_user:Jr2tJL3phVZp8k@podcast.zpapegt.mongodb.net/?appName=podcast';
+
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Conectado exitosamente a MongoDB Atlas'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
@@ -87,3 +88,4 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
